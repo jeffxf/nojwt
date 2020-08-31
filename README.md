@@ -9,6 +9,6 @@ Although this isn't endorsed by @FiloSottile (Filippo Valsorda), it's influenced
 by his twitter thread of valid JWS complaints: 
 https://twitter.com/FiloSottile/status/1288964453065797632
 
-This repo is a golang example of how you could replace JWT with Ed25519. A few 
-simple wrapper functions exist in this module allowing you to create tokens 
-easily.
+This repo is a golang example of how you could replace JWT signing with Ed25519.
+an example can be found in 
+[`example/example.go`](https://github.com/jeffxf/nojwt/blob/main/example/example.go).

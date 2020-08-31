@@ -10,5 +10,5 @@ by his twitter thread of valid JWS complaints:
 https://twitter.com/FiloSottile/status/1288964453065797632
 
 This repo is a golang example of how you could replace JWT signing with Ed25519.
-an example can be found in 
+An example can be found in 
 [`example/example.go`](https://github.com/jeffxf/nojwt/blob/main/example/example.go).

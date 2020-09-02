@@ -9,8 +9,8 @@ import (
 	"github.com/jeffxf/nojwt"
 )
 
-// Token describes the data within a token
-type Token struct {
+// tokenData describes the data within our token
+type TokenData struct {
 	Username      string `json:"username"`
 	UserID        int    `json:"userid"`
 	SomeOtherType interface{}
@@ -25,30 +25,29 @@ func main() {
 	// previously signed tokens
 
 	//Set the fields of the token we want to create
-	token := Token{
+	tokenData := TokenData{
 		Username:      "jeffxf",
 		UserID:        501,
 		SomeOtherType: map[string]string{"details": "nada"},
 	}
-	fmt.Printf("Token data: %+v\n\n", token)
+	fmt.Printf("Token data: %+v\n\n", tokenData)
 
 	// Encode and sign the token with the private key
-	signedToken, err := nojwt.Encode(privateKey, token)
+	signedToken, err := nojwt.Encode(privateKey, tokenData)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Signed Token: %s\n\n", signedToken)
 
 	// Once the token has been sent to a client and returned back to you, any of
 	// your services that have the public key can verify the signature of a
 	// token is valid and read the data in one shot via the Decode function.
 	// Let's extract the data into a new instance of our Claims struct
-	var decodedToken Token
-	err = nojwt.Decode(publicKey, signedToken, &decodedToken)
+	var decodedTokenData TokenData
+	err = nojwt.Decode(publicKey, signedToken, &decodedTokenData)
 	if err != nil {
 		log.Fatal(err.Error())
 	}
 
 	// Print the username field from the decoded token as an example
-	fmt.Printf("Username: %s\n\n", decodedToken.Username)
+	fmt.Printf("Username: %s\n\n", decodedTokenData.Username)
 }

@@ -9,8 +9,8 @@ import (
 	"github.com/jeffxf/nojwt"
 )
 
-// Claims describes the data we want to include in a token
-type Claims struct {
+// Token describes the data within a token
+type Token struct {
 	Username      string `json:"username"`
 	UserID        int    `json:"userid"`
 	SomeOtherType interface{}
@@ -25,38 +25,30 @@ func main() {
 	// previously signed tokens
 
 	//Set the fields of the token we want to create
-	tokenClaims := Claims{
+	token := Token{
 		Username:      "jeffxf",
 		UserID:        501,
 		SomeOtherType: map[string]string{"details": "nada"},
 	}
-	fmt.Printf("Token Claims: %+v\n\n", tokenClaims)
+	fmt.Printf("Token data: %+v\n\n", token)
 
-	// Create the token
-	token, err := nojwt.CreateToken(privateKey, tokenClaims)
+	// Encode and sign the token with the private key
+	signedToken, err := nojwt.Encode(privateKey, token)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("Token: %v\n\n", token)
+	fmt.Printf("Signed Token: %s\n\n", signedToken)
 
 	// Once the token has been sent to a client and returned back to you, any of
-	// your services that have the public key can verify the signature is valid
-	verified, err := nojwt.VerifyToken(publicKey, token)
+	// your services that have the public key can verify the signature of a
+	// token is valid and read the data in one shot via the Decode function.
+	// Let's extract the data into a new instance of our Claims struct
+	var decodedToken Token
+	err = nojwt.Decode(publicKey, signedToken, &decodedToken)
 	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Printf("Valid Signature: %t\n\n", verified)
-	if !verified {
-		return
+		log.Fatal(err.Error())
 	}
 
-	// Now that we've validated the signature, let's extract the data from the
-	// token into a new instance of our Claims struct
-	var retrievedTokenData Claims
-	err = nojwt.ReadToken(token, &retrievedTokenData)
-	if err != nil {
-		log.Fatal(err)
-	}
-	// Print the username field from the token as an example
-	fmt.Printf("Username: %s\n\n", retrievedTokenData.Username)
+	// Print the username field from the decoded token as an example
+	fmt.Printf("Username: %s\n\n", decodedToken.Username)
 }
